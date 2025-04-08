@@ -7,7 +7,7 @@ import (
 
 type Watcher interface {
 	FirstRun() bool
-	Do(ctx context.Context) ([]api.Product, error)
+	Watch(ctx context.Context) ([]api.Product, error)
 }
 
 type watcher struct {
@@ -27,6 +27,6 @@ func (w *watcher) FirstRun() bool {
 	return w.firstRun
 }
 
-func (w *watcher) Do(context.Context) ([]api.Product, error) {
+func (w *watcher) Watch(context.Context) ([]api.Product, error) {
 	return []api.Product{}, nil
 }
