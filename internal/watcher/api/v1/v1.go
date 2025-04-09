@@ -34,6 +34,17 @@ type Response struct {
 	List            []Product     `json:"list"`
 }
 
+const (
+	ProductStatusOnSale   = 0
+	ProductStatusReserved = 1
+	ProductStatusSoldOut  = 3
+)
+
+const (
+	ProductUsedLightly = 1
+	ProductUsedNew     = 2
+)
+
 type Product struct {
 	Pid              string      `json:"pid"`
 	Name             string      `json:"name"`
