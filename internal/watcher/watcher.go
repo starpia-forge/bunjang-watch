@@ -12,6 +12,7 @@ type Watcher interface {
 
 type watcher struct {
 	*WatcherConfig
+	filters []Filter
 }
 
 func NewWatcher() Watcher {
@@ -57,5 +58,21 @@ func (w *watcher) watch(ctx context.Context) ([]v1.Product, error) {
 	if err != nil {
 		return nil, err
 	}
-	return products, nil
+	return w.filter(products), nil
+}
+
+func (w *watcher) filter(products []v1.Product) []v1.Product {
+	var result []v1.Product
+	for _, product := range products {
+		apply := true
+		for _, filter := range w.filters {
+			if apply = filter.Apply(product); !apply {
+				break
+			}
+		}
+		if apply {
+			result = append(result, product)
+		}
+	}
+	return result
 }
