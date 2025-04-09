@@ -6,25 +6,25 @@ import (
 )
 
 type Watcher interface {
-	FirstRun() bool
 	Watch(ctx context.Context) ([]api.Product, error)
 }
 
 type watcher struct {
-	firstRun bool
-	products map[string]api.Product
-	config   Config
+	*WatcherConfig
 }
 
-func NewWatcher(c Config) Watcher {
-	return &watcher{
-		firstRun: true,
-		config:   c,
+func NewWatcher() Watcher {
+	w := &watcher{
+		WatcherConfig: &DefaultWatcherConfig,
 	}
+	return w
 }
 
-func (w *watcher) FirstRun() bool {
-	return w.firstRun
+func NewWatcherWithConfig(c *WatcherConfig) Watcher {
+	w := &watcher{
+		WatcherConfig: c,
+	}
+	return w
 }
 
 func (w *watcher) Watch(context.Context) ([]api.Product, error) {
