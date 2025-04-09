@@ -8,9 +8,11 @@ import (
 var DefaultWatcherConfig WatcherConfig
 
 type WatcherConfig struct {
-	Interval    time.Duration
-	Keywords    []*regexp.Regexp
-	MinPrice    int
-	MaxPrice    int
-	IncludeUsed bool
+	Query          string
+	Keywords       []*regexp.Regexp
+	IgnoreKeywords []*regexp.Regexp
+	MinPrice       int
+	MaxPrice       int
+	IncludeUsed    bool
+	Interval       time.Duration
 }
