@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-var defaultWatchConfig WatchConfig
+var DefaultWatcherConfig WatcherConfig
 
-type WatchConfig struct {
+type WatcherConfig struct {
 	Interval    time.Duration
 	Keywords    []*regexp.Regexp
 	MinPrice    int
