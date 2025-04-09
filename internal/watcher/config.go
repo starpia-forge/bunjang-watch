@@ -1,15 +1,16 @@
 package watcher
 
-import "time"
+import (
+	"regexp"
+	"time"
+)
 
-type Config struct {
-	Interval time.Duration `json:"interval"`
-	Filter
-}
+var defaultWatchConfig WatchConfig
 
-type Filter struct {
-	Keywords     []string
-	MinimumPrice int
-	MaximumPrice int
-	IncludeUsed  bool
+type WatchConfig struct {
+	Interval    time.Duration
+	Keywords    []*regexp.Regexp
+	MinPrice    int
+	MaxPrice    int
+	IncludeUsed bool
 }
