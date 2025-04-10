@@ -34,6 +34,7 @@ func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
 	out := make(chan []bunjang.Product)
 
 	go func() {
+		defer close(out)
 		ticker := time.NewTicker(w.Interval)
 		defer ticker.Stop()
 		for {
