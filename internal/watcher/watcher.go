@@ -2,6 +2,7 @@ package watcher
 
 import (
 	"context"
+	"github.com/starpia-forge/bunjang-watch/internal/filter"
 	"github.com/starpia-forge/bunjang-watch/internal/watcher/api/v1"
 	"time"
 )
@@ -12,7 +13,7 @@ type Watcher interface {
 
 type watcher struct {
 	*WatcherConfig
-	filters []Filter
+	productFilters []filter.Filter[v1.Product]
 }
 
 func NewWatcher() Watcher {
@@ -65,8 +66,8 @@ func (w *watcher) filter(products []v1.Product) []v1.Product {
 	var result []v1.Product
 	for _, product := range products {
 		apply := true
-		for _, filter := range w.filters {
-			if apply = filter.Apply(product); !apply {
+		for _, productFilter := range w.productFilters {
+			if apply = productFilter.Apply(product); !apply {
 				break
 			}
 		}
