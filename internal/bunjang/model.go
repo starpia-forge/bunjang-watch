@@ -1,13 +1,5 @@
 package bunjang
 
-import (
-	"context"
-	"encoding/json"
-	"io"
-	"net/http"
-	"net/url"
-)
-
 const (
 	QueryUrl = "https://api.bunjang.co.kr/api/1/find_v2.json"
 )
@@ -91,35 +83,4 @@ type Product struct {
 	Type   string      `json:"type"`
 	AppUrl interface{} `json:"app_url"`
 	ImpId  string      `json:"imp_id"`
-}
-
-func Query(ctx context.Context) ([]Product, error) {
-	u, err := url.Parse(QueryUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	request, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	client := http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	apiResponse := Response{}
-	if err := json.Unmarshal(body, &apiResponse); err != nil {
-		return nil, err
-	}
-
-	return apiResponse.List, nil
 }
