@@ -1,26 +1,26 @@
 package filter
 
 import (
-	v1 "github.com/starpia-forge/bunjang-watch/internal/watcher/api/v1"
+	"github.com/starpia-forge/bunjang-watch/internal/bunjang"
 	"regexp"
 	"strconv"
 )
 
 type StatusFilter struct{}
 
-func (f *StatusFilter) Apply(p v1.Product) bool {
+func (f *StatusFilter) Apply(p bunjang.Product) bool {
 	status, err := strconv.Atoi(p.Status)
 	if err != nil {
 		return false
 	}
-	return status < v1.ProductStatusSoldOut
+	return status < bunjang.ProductStatusSoldOut
 }
 
 type MinPriceFilter struct {
 	MinPrice int
 }
 
-func (f *MinPriceFilter) Apply(p v1.Product) bool {
+func (f *MinPriceFilter) Apply(p bunjang.Product) bool {
 	if p.Price == "" {
 		return false
 	}
@@ -35,7 +35,7 @@ type MaxPriceFilter struct {
 	MaxPrice int
 }
 
-func (f *MaxPriceFilter) Apply(p v1.Product) bool {
+func (f *MaxPriceFilter) Apply(p bunjang.Product) bool {
 	if p.Price == "" {
 		return false
 	}
@@ -50,7 +50,7 @@ type KeywordFilter struct {
 	Keywords []*regexp.Regexp
 }
 
-func (f *KeywordFilter) Apply(p v1.Product) bool {
+func (f *KeywordFilter) Apply(p bunjang.Product) bool {
 	if len(f.Keywords) == 0 {
 		return true
 	}
@@ -66,7 +66,7 @@ type IgnoreKeywordFilter struct {
 	IgnoreKeywords []*regexp.Regexp
 }
 
-func (f *IgnoreKeywordFilter) Apply(p v1.Product) bool {
+func (f *IgnoreKeywordFilter) Apply(p bunjang.Product) bool {
 	for _, keyword := range f.IgnoreKeywords {
 		if keyword.MatchString(p.Name) {
 			return false
@@ -79,9 +79,9 @@ type IncludeUsedFilter struct {
 	IncludeUsed bool
 }
 
-func (f *IncludeUsedFilter) Apply(p v1.Product) bool {
+func (f *IncludeUsedFilter) Apply(p bunjang.Product) bool {
 	if f.IncludeUsed {
 		return true
 	}
-	return p.Used == v1.ProductUsedNew
+	return p.Used == bunjang.ProductUsedNew
 }

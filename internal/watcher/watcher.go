@@ -2,18 +2,18 @@ package watcher
 
 import (
 	"context"
+	"github.com/starpia-forge/bunjang-watch/internal/bunjang"
 	"github.com/starpia-forge/bunjang-watch/internal/filter"
-	"github.com/starpia-forge/bunjang-watch/internal/watcher/api/v1"
 	"time"
 )
 
 type Watcher interface {
-	Watch(ctx context.Context) (chan []v1.Product, error)
+	Watch(ctx context.Context) (chan []bunjang.Product, error)
 }
 
 type watcher struct {
 	*WatcherConfig
-	productFilters []filter.Filter[v1.Product]
+	productFilters []filter.Filter[bunjang.Product]
 }
 
 func NewWatcher() Watcher {
@@ -30,8 +30,8 @@ func NewWatcherWithConfig(c *WatcherConfig) Watcher {
 	return w
 }
 
-func (w *watcher) Watch(ctx context.Context) (chan []v1.Product, error) {
-	out := make(chan []v1.Product)
+func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
+	out := make(chan []bunjang.Product)
 
 	go func() {
 		ticker := time.NewTicker(w.Interval)
@@ -54,16 +54,16 @@ func (w *watcher) Watch(ctx context.Context) (chan []v1.Product, error) {
 	return out, nil
 }
 
-func (w *watcher) watch(ctx context.Context) ([]v1.Product, error) {
-	products, err := v1.Query(ctx)
+func (w *watcher) watch(ctx context.Context) ([]bunjang.Product, error) {
+	products, err := bunjang.Query(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return w.filter(products), nil
 }
 
-func (w *watcher) filter(products []v1.Product) []v1.Product {
-	var result []v1.Product
+func (w *watcher) filter(products []bunjang.Product) []bunjang.Product {
+	var result []bunjang.Product
 	for _, product := range products {
 		apply := true
 		for _, productFilter := range w.productFilters {
