@@ -1,14 +1,10 @@
-package watcher
+package filter
 
 import (
 	v1 "github.com/starpia-forge/bunjang-watch/internal/watcher/api/v1"
 	"regexp"
 	"strconv"
 )
-
-type Filter interface {
-	Apply(v1.Product) bool
-}
 
 type StatusFilter struct{}
 
