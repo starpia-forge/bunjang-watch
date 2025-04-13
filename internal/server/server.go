@@ -61,7 +61,7 @@ func WithServerWriteTimeout(timeout time.Duration) Option {
 	}
 }
 
-func New(opts ...Option) (*http.Server, error) {
+func NewServer(opts ...Option) (*http.Server, error) {
 	s := &Server{
 		Address:      DefaultServerAddress,
 		IdleTimeout:  DefaultIdleTimeout,
