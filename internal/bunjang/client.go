@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type Client interface {
@@ -18,8 +19,9 @@ type client struct {
 }
 
 type ClientConfig struct {
-	URL   *url.URL
-	Query string
+	URL     *url.URL
+	Query   string
+	Timeout time.Duration
 }
 
 func NewClientWithConfig(c *ClientConfig) (Client, error) {
@@ -30,6 +32,9 @@ func NewClientWithConfig(c *ClientConfig) (Client, error) {
 }
 
 func (c *client) Query(ctx context.Context) ([]Product, error) {
+	ctx, cancel := context.WithTimeout(ctx, c.config.Timeout)
+	defer cancel()
+
 	req, err := http.NewRequestWithContext(ctx, "GET", c.config.URL.String(), nil)
 	if err != nil {
 		return nil, err
