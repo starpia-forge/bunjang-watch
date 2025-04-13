@@ -14,7 +14,7 @@ var (
 )
 
 type WatcherManager struct {
-	mu       sync.RWMutex
+	sync.RWMutex
 	watchers map[string]*runningWatcher
 }
 
@@ -31,8 +31,8 @@ func NewWatcherManager() *WatcherManager {
 }
 
 func (wm *WatcherManager) AddWatcher(id string, w Watcher) error {
-	wm.mu.Lock()
-	defer wm.mu.Unlock()
+	wm.Lock()
+	defer wm.Unlock()
 
 	if _, exists := wm.watchers[id]; exists {
 		return ErrWatcherAlreadyExists
@@ -45,8 +45,8 @@ func (wm *WatcherManager) AddWatcher(id string, w Watcher) error {
 }
 
 func (wm *WatcherManager) StartWatcher(id string) error {
-	wm.mu.Lock()
-	defer wm.mu.Unlock()
+	wm.Lock()
+	defer wm.Unlock()
 
 	rw, ok := wm.watchers[id]
 	if !ok {
@@ -77,8 +77,8 @@ func (wm *WatcherManager) StartWatcher(id string) error {
 }
 
 func (wm *WatcherManager) StopWatcher(id string) error {
-	wm.mu.Lock()
-	defer wm.mu.Unlock()
+	wm.Lock()
+	defer wm.Unlock()
 
 	rw, ok := wm.watchers[id]
 	if !ok {
@@ -104,16 +104,16 @@ func (wm *WatcherManager) RemoveWatcher(id string) error {
 		return err
 	}
 
-	wm.mu.Lock()
-	defer wm.mu.Unlock()
+	wm.Lock()
+	defer wm.Unlock()
 
 	delete(wm.watchers, id)
 	return nil
 }
 
 func (wm *WatcherManager) ListWatchers() []string {
-	wm.mu.RLock()
-	defer wm.mu.RUnlock()
+	wm.RLock()
+	defer wm.RUnlock()
 
 	ids := make([]string, 0, len(wm.watchers))
 	for id := range wm.watchers {
