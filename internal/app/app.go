@@ -17,7 +17,7 @@ type App struct {
 	manager *watcher.WatcherManager
 }
 
-func New() (*App, error) {
+func NewApp() (*App, error) {
 	srv, err := server.NewServer()
 	if err != nil {
 		return nil, err
