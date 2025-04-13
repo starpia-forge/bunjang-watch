@@ -11,12 +11,6 @@ type Watcher interface {
 	Watch(ctx context.Context) (chan []bunjang.Product, error)
 }
 
-type watcher struct {
-	*WatcherConfig
-	productFilters []filter.Filter[bunjang.Product]
-	client         bunjang.Client
-}
-
 func NewWatcher() Watcher {
 	w := &watcher{
 		WatcherConfig: &DefaultWatcherConfig,
@@ -29,6 +23,12 @@ func NewWatcherWithConfig(c *WatcherConfig) Watcher {
 		WatcherConfig: c,
 	}
 	return w
+}
+
+type watcher struct {
+	*WatcherConfig
+	productFilters []filter.Filter[bunjang.Product]
+	client         bunjang.Client
 }
 
 func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
