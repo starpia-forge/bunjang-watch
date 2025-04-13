@@ -14,6 +14,7 @@ type Watcher interface {
 type watcher struct {
 	*WatcherConfig
 	productFilters []filter.Filter[bunjang.Product]
+	client         bunjang.Client
 }
 
 func NewWatcher() Watcher {
@@ -56,7 +57,7 @@ func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
 }
 
 func (w *watcher) watch(ctx context.Context) ([]bunjang.Product, error) {
-	products, err := bunjang.Query(ctx)
+	products, err := w.client.Query(ctx)
 	if err != nil {
 		return nil, err
 	}
