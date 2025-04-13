@@ -14,7 +14,7 @@ type Client interface {
 }
 
 type client struct {
-	config *ClientConfig
+	config ClientConfig
 	client *http.Client
 }
 
@@ -24,7 +24,7 @@ type ClientConfig struct {
 	Timeout time.Duration
 }
 
-func NewClientWithConfig(c *ClientConfig) (Client, error) {
+func NewClientWithConfig(c ClientConfig) (Client, error) {
 	return &client{
 		config: c,
 		client: &http.Client{},
