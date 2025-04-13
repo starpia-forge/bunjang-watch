@@ -39,6 +39,7 @@ func (c *client) Query(ctx context.Context) ([]Product, error) {
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("User-Agent", "bunjang-watch/1.0 (+https://github.com/starpia-forge/bunjang-watch)")
 
 	resp, err := c.client.Do(req)
 	if err != nil {
