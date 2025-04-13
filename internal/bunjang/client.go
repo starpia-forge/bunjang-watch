@@ -13,6 +13,13 @@ type Client interface {
 	Query(ctx context.Context) ([]Product, error)
 }
 
+func NewClientWithConfig(c ClientConfig) (Client, error) {
+	return &client{
+		config: c,
+		client: &http.Client{},
+	}, nil
+}
+
 type client struct {
 	config ClientConfig
 	client *http.Client
@@ -22,13 +29,6 @@ type ClientConfig struct {
 	URL     *url.URL
 	Query   string
 	Timeout time.Duration
-}
-
-func NewClientWithConfig(c ClientConfig) (Client, error) {
-	return &client{
-		config: c,
-		client: &http.Client{},
-	}, nil
 }
 
 func (c *client) Query(ctx context.Context) ([]Product, error) {
