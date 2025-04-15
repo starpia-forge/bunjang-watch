@@ -14,6 +14,18 @@ type Watcher interface {
 
 type WatcherOptions func(w *watcher)
 
+func WithWatcherFilters(f ...filter.Filter[bunjang.Product]) WatcherOptions {
+	return func(w *watcher) {
+		w.filters = f
+	}
+}
+
+func WithWatcherClient(client bunjang.Client) WatcherOptions {
+	return func(w *watcher) {
+		w.client = client
+	}
+}
+
 func WithWatcherNotifier(n notifier.Notifier) WatcherOptions {
 	return func(w *watcher) {
 		w.notifier = n
@@ -33,10 +45,10 @@ func NewWatcher(c WatcherConfig, opts ...WatcherOptions) Watcher {
 }
 
 type watcher struct {
-	config         WatcherConfig
-	productFilters []filter.Filter[bunjang.Product]
-	client         bunjang.Client
-	notifier       notifier.Notifier
+	config   WatcherConfig
+	filters  []filter.Filter[bunjang.Product]
+	client   bunjang.Client
+	notifier notifier.Notifier
 }
 
 func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
@@ -76,7 +88,7 @@ func (w *watcher) filter(products []bunjang.Product) []bunjang.Product {
 	var result []bunjang.Product
 	for _, product := range products {
 		apply := true
-		for _, productFilter := range w.productFilters {
+		for _, productFilter := range w.filters {
 			if apply = productFilter.Apply(product); !apply {
 				break
 			}
