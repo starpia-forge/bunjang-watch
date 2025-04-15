@@ -13,20 +13,20 @@ type Watcher interface {
 
 func NewWatcher() Watcher {
 	w := &watcher{
-		WatcherConfig: &DefaultWatcherConfig,
+		config: DefaultWatcherConfig,
 	}
 	return w
 }
 
-func NewWatcherWithConfig(c *WatcherConfig) Watcher {
+func NewWatcherWithConfig(c WatcherConfig) Watcher {
 	w := &watcher{
-		WatcherConfig: c,
+		config: c,
 	}
 	return w
 }
 
 type watcher struct {
-	*WatcherConfig
+	config         WatcherConfig
 	productFilters []filter.Filter[bunjang.Product]
 	client         bunjang.Client
 }
@@ -36,7 +36,7 @@ func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
 
 	go func() {
 		defer close(out)
-		ticker := time.NewTicker(w.Interval)
+		ticker := time.NewTicker(w.config.Interval)
 		defer ticker.Stop()
 		for {
 			select {
