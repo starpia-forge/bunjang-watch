@@ -30,7 +30,7 @@ func NewWatcherManager() *WatcherManager {
 	}
 }
 
-func (wm *WatcherManager) AddWatcher(id string, w Watcher) error {
+func (wm *WatcherManager) AddWatcher(id string, w WatcherConfig) error {
 	wm.Lock()
 	defer wm.Unlock()
 
@@ -39,7 +39,7 @@ func (wm *WatcherManager) AddWatcher(id string, w Watcher) error {
 	}
 
 	wm.watchers[id] = &runningWatcher{
-		watcher: w,
+		watcher: NewWatcherWithConfig(w),
 	}
 	return nil
 }
