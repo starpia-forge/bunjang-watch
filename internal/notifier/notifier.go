@@ -13,6 +13,10 @@ type MultiHookNotifier struct {
 	hooks []hook.Hook
 }
 
+func NewMultiHookNotifier(hooks ...hook.Hook) *MultiHookNotifier {
+	return &MultiHookNotifier{hooks: hooks}
+}
+
 func (m *MultiHookNotifier) Notify(ctx context.Context, alert string) error {
 	for _, h := range m.hooks {
 		if err := h.SendAlert(ctx, alert); err != nil {
