@@ -3,6 +3,9 @@ package watcher
 import (
 	"context"
 	"errors"
+	"github.com/starpia-forge/bunjang-watch/internal/bunjang"
+	"github.com/starpia-forge/bunjang-watch/internal/notifier"
+	"github.com/starpia-forge/bunjang-watch/internal/watcher/filter"
 	"sync"
 )
 
@@ -19,9 +22,12 @@ type WatcherManager struct {
 }
 
 type runningWatcher struct {
-	watcher Watcher
-	cancel  context.CancelFunc
-	done    chan struct{}
+	watcher  Watcher
+	filters  []filter.Filter[bunjang.Product]
+	client   bunjang.Client
+	notifier notifier.Notifier
+	cancel   context.CancelFunc
+	done     chan struct{}
 }
 
 func NewWatcherManager() *WatcherManager {
@@ -69,7 +75,16 @@ func (wm *WatcherManager) StartWatcher(id string) error {
 
 	go func() {
 		defer close(rw.done)
-		for range out {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case products := <-out:
+				for _, product := range filter.ChainApply(rw.filters, products) {
+					// TODO - Error Handling
+					rw.notifier.Notify(ctx, product.Name)
+				}
+			}
 		}
 	}()
 
