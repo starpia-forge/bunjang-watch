@@ -1,7 +1,11 @@
 package hook
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"net/url"
 )
 
@@ -11,13 +15,8 @@ type slackHook struct {
 }
 
 func newSlackHook(c HookConfig) (*slackHook, error) {
-	u, err := url.Parse(c.URL)
-	if err != nil {
-		return nil, err
-	}
 	return &slackHook{
 		config: c,
-		url:    u,
 	}, nil
 }
 
@@ -30,6 +29,34 @@ func (s *slackHook) Name() string {
 }
 
 func (s *slackHook) SendAlert(ctx context.Context, alert string) error {
+	ctx, cancel := context.WithTimeout(ctx, s.config.Timeout)
+	defer cancel()
+
+	v := map[string]string{
+		"text": alert,
+	}
+	body, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "POST", s.url.String(), bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("%w: %d", ErrRequestNotSuccessful, resp.StatusCode)
+	}
+
 	return nil
 }
 
