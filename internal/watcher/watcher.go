@@ -11,14 +11,7 @@ type Watcher interface {
 	Watch(ctx context.Context) (chan []bunjang.Product, error)
 }
 
-func NewWatcher() Watcher {
-	w := &watcher{
-		config: DefaultWatcherConfig,
-	}
-	return w
-}
-
-func NewWatcherWithConfig(c WatcherConfig) Watcher {
+func NewWatcher(c WatcherConfig) Watcher {
 	w := &watcher{
 		config: c,
 	}
