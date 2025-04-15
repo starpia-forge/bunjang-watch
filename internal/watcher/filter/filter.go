@@ -10,7 +10,7 @@ type Filter[T any] interface {
 	Apply(T) bool
 }
 
-func FilterChain[T any](filters []Filter[T], items []T) []T {
+func ChainApply[T any](filters []Filter[T], items []T) []T {
 	var result []T
 	for _, item := range items {
 		apply := true
