@@ -73,21 +73,5 @@ func (w *watcher) watch(ctx context.Context) ([]bunjang.Product, error) {
 	if err != nil {
 		return nil, err
 	}
-	return w.filter(products), nil
-}
-
-func (w *watcher) filter(products []bunjang.Product) []bunjang.Product {
-	var result []bunjang.Product
-	for _, product := range products {
-		apply := true
-		for _, productFilter := range w.filters {
-			if apply = productFilter.Apply(product); !apply {
-				break
-			}
-		}
-		if apply {
-			result = append(result, product)
-		}
-	}
-	return result
+	return products, nil
 }
