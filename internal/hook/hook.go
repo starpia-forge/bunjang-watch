@@ -12,7 +12,8 @@ const (
 )
 
 var (
-	ErrInvalidHookType = errors.New("invalid hook type")
+	ErrInvalidHookType      = errors.New("invalid hook type")
+	ErrRequestNotSuccessful = errors.New("request not successful")
 )
 
 type Hook interface {

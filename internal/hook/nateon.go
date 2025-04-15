@@ -2,7 +2,10 @@ package hook
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"net/url"
+	"strings"
 )
 
 type nateOnHook struct {
@@ -25,6 +28,29 @@ func (n *nateOnHook) Name() string {
 }
 
 func (n *nateOnHook) SendAlert(ctx context.Context, alert string) error {
+	ctx, cancel := context.WithTimeout(ctx, n.config.Timeout)
+	defer cancel()
+
+	v := url.Values{}
+	v.Set("content", alert)
+
+	req, err := http.NewRequestWithContext(ctx, "POST", n.url.String(), strings.NewReader(v.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("%w: %d", ErrRequestNotSuccessful, resp.StatusCode)
+	}
+
 	return nil
 }
 
