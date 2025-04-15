@@ -3,7 +3,6 @@ package watcher
 import (
 	"context"
 	"github.com/starpia-forge/bunjang-watch/internal/bunjang"
-	"github.com/starpia-forge/bunjang-watch/internal/notifier"
 	"github.com/starpia-forge/bunjang-watch/internal/watcher/filter"
 	"time"
 )
@@ -26,12 +25,6 @@ func WithWatcherClient(client bunjang.Client) WatcherOptions {
 	}
 }
 
-func WithWatcherNotifier(n notifier.Notifier) WatcherOptions {
-	return func(w *watcher) {
-		w.notifier = n
-	}
-}
-
 func NewWatcher(c WatcherConfig, opts ...WatcherOptions) Watcher {
 	w := &watcher{
 		config: c,
@@ -45,10 +38,9 @@ func NewWatcher(c WatcherConfig, opts ...WatcherOptions) Watcher {
 }
 
 type watcher struct {
-	config   WatcherConfig
-	filters  []filter.Filter[bunjang.Product]
-	client   bunjang.Client
-	notifier notifier.Notifier
+	config  WatcherConfig
+	filters []filter.Filter[bunjang.Product]
+	client  bunjang.Client
 }
 
 func (w *watcher) Watch(ctx context.Context) (chan []bunjang.Product, error) {
