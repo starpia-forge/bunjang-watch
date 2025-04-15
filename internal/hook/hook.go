@@ -23,12 +23,6 @@ type Hook interface {
 	setURL(*url.URL)
 }
 
-type HookConfig struct {
-	Type string
-	Name string
-	URL  string
-}
-
 func NewHook(c HookConfig) (Hook, error) {
 	switch c.Type {
 	case HookTypeNateOn:
