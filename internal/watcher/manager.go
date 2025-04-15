@@ -39,7 +39,7 @@ func (wm *WatcherManager) AddWatcher(id string, w WatcherConfig) error {
 	}
 
 	wm.watchers[id] = &runningWatcher{
-		watcher: NewWatcherWithConfig(w),
+		watcher: NewWatcher(w),
 	}
 	return nil
 }
