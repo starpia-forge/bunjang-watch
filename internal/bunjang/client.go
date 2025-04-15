@@ -11,7 +11,7 @@ type Client interface {
 	Query(ctx context.Context) ([]Product, error)
 }
 
-func NewClientWithConfig(c ClientConfig) (Client, error) {
+func NewClient(c ClientConfig) (Client, error) {
 	return &client{
 		config: c,
 		client: &http.Client{},
