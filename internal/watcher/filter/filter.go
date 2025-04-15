@@ -10,6 +10,22 @@ type Filter[T any] interface {
 	Apply(T) bool
 }
 
+func FilterChain[T any](filters []Filter[T], items []T) []T {
+	var result []T
+	for _, item := range items {
+		apply := true
+		for _, productFilter := range filters {
+			if apply = productFilter.Apply(item); !apply {
+				break
+			}
+		}
+		if apply {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
 type StatusFilter struct{}
 
 func (f *StatusFilter) Apply(p bunjang.Product) bool {
