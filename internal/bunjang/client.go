@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"net/url"
-	"time"
 )
 
 type Client interface {
@@ -23,12 +21,6 @@ func NewClientWithConfig(c ClientConfig) (Client, error) {
 type client struct {
 	config ClientConfig
 	client *http.Client
-}
-
-type ClientConfig struct {
-	URL     *url.URL
-	Query   string
-	Timeout time.Duration
 }
 
 func (c *client) Query(ctx context.Context) ([]Product, error) {
